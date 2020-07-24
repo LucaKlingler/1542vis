@@ -1,0 +1,21 @@
+DRUMS:
+
+ * open high hat
+ * drums.mp3
+ * Band: 6
+ * peak: ca 190
+
+UFO:
+
+* open high hat
+ * UFO.mp3
+ * Band: 11-15,21-25
+ * peak: ca 150
+
+GLOCKENSPIEL:
+
+* open high hat
+ * Glockenspiel.mp3
+ * Band: 22-24, 26-28, 35-37
+ * peak: ca 155
+

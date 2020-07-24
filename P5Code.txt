@@ -1,0 +1,252 @@
+GLOCKENSPIEL:
+
+let song, analyzer;
+let r, g, b;
+let mic, fft;
+
+function preload() {
+  song = loadSound('other.mp3');
+}
+
+function setup() {
+  createCanvas(600, 600);
+  r = random(255);
+  g = random(100);
+  b = random(100);
+  song.loop();
+
+
+  analyzer = new p5.Amplitude();
+
+
+  analyzer.setInput(song);
+  
+  
+  mic = new p5.AudioIn();
+  mic.start();
+  fft = new p5.FFT();
+  fft.setInput(mic);
+}
+
+function draw() {
+  background(0);
+
+ 
+  let rms = analyzer.getLevel();
+  fill(r, g, b, 170);
+  stroke(5);
+
+  // Mitte
+  ellipse(width / 2, height / 2, 10 + rms * 200, 10 + rms * 200);
+  // Mitte klein
+  ellipse(width / 2, height / 2, 2.5 + rms * 200, 2.5 + rms * 200);
+
+  // Mitte oben
+  ellipse(width / 2, height / 2.1, 10 + rms * 200, 10 + rms * 200);
+  // Mitte oben
+  ellipse(width / 2, height / 2.1, 2.5 + rms * 200, 2.5 + rms * 200);
+  
+  //links oben
+  ellipse(width / 2.1, height / 2.05, 10 + rms * 200, 10 + rms * 200);
+  //links oben
+  ellipse(width / 2.1, height / 2.05, 2.5 + rms * 200, 2.5 + rms * 200);
+  
+
+  //rechts unten
+  ellipse(width / 1.9, height / 1.95, 10 + rms * 200, 10 + rms * 200);
+  //rechts unten
+  ellipse(width / 1.9, height / 1.95, 2.5 + rms * 200, 2.5 + rms * 200);
+
+  //links unten
+  ellipse(width / 2.1, height / 1.95, 10 + rms * 200, 10 + rms * 200);
+  //links unten
+  ellipse(width / 2.1, height / 1.95, 2.5 + rms * 200, 2.5 + rms * 200);
+  
+  //rechts oben//
+  ellipse(width / 1.9, height / 2.05, 10 + rms * 200, 10 + rms * 200);
+  //rechts oben//
+  ellipse(width / 1.9, height / 2.05, 2.5 + rms * 200, 2.5 + rms * 200);
+
+  
+  //mitte unten//
+  ellipse(width / 2, height / 1.9, 10 + rms * 200, 10 + rms * 200);
+  //mitte unten//
+  ellipse(width / 2, height / 1.9, 2.5 + rms * 200, 2.5 + rms * 200);
+  
+  
+  
+  
+  
+  
+  let spectrum = fft.analyze();
+
+  beginShape();
+  for (i = 0; i < spectrum.length; i++) {
+    vertex(i, map(spectrum[i], 0, 255, height, 0));
+  }
+  endShape();
+}
+
+
+
+
+UFO:
+
+let phase = 0;
+let zoff = 0;
+
+
+function setup() {
+  createCanvas(600, 600);
+  slider = createSlider(0, 10, 5 , 0.1);
+  song = loadSound('1542.mp3');
+}
+
+function ufo(){
+  translate(width/2, height/2);
+  stroke(255);
+  noFill();
+  beginShape();
+  let noiseMax = slider.value();
+  for (let a = 0; a < TWO_PI; a+=0.1) {
+    let xoff = map(cos(a+phase/2),-1,1,0,noiseMax);
+    let yoff = map(sin(a),-1,1,0,noiseMax);
+    let r = map(noise(xoff, yoff, zoff), 0, 1, 100, 200);
+    let x = r * cos(a);
+    let y = r * sin(a);
+    vertex(x,y);
+}  
+  
+endShape(CLOSE);
+  
+zoff += 0.1;
+
+phase += 0.1;
+}
+
+function bell() {
+  //line(-300, 100, 300, 100);
+  //line(-175, 300, -50, 100);
+  //line(175, 300, 50, 100);
+  quad(-301, 100, -301, 301, -175, 301, -50, 100,);
+  quad(-50, 100, -175, 301, 175, 301, 50, 100);
+  quad(50, 100, 175, 301, 301, 301, 301, 100);
+}
+
+function draw() {
+  background(0);
+  ufo();
+  bell();
+}
+
+function mousePressed() {
+  if (song.isPlaying()) {
+    // .isPlaying() returns a boolean
+    song.pause();
+  } else {
+    song.play();
+  }
+}
+
+function sound() {
+  let freq = map(mouseX, 0, width/2, 20, 10000);
+  freq = constrain(freq, -1, 22050);
+  filter.freq(freq)
+  let res = map(mouseY, 0, height, 0, 150);
+  filter.res(res);
+  console.log("freq = " + freq + "  res = " + res)
+}
+ 
+
+
+UFO EINZELN:
+
+let slider;
+let phase = 0;
+let zoff = 0;
+
+
+function setup() {
+  createCanvas(600, 600);
+  slider = createSlider(0, 10, 5 , 0.1);
+}
+
+function draw() {
+  background(0);
+  translate(width/2, height/2);
+  stroke(255);
+  noFill();
+  beginShape();
+  let noiseMax = slider.value();
+  for (let a = 0; a < TWO_PI; a+=0.1) {
+    let xoff = map(cos(a+phase),-1,1,0,noiseMax);
+    let yoff = map(sin(a),-1,1,0,noiseMax);
+    let r = map(noise(xoff, yoff, zoff), 0, 1, 100, 200);
+    let x = r * cos(a);
+    let y = r * sin(a);
+    vertex(x,y);
+}  
+endShape(CLOSE);
+  
+zoff += 0.1;
+
+phase += 0,1;
+}
+
+
+
+RULER:
+
+let song, analyzer;
+let r, g, b;
+let mic, fft;
+
+function preload() {
+  song = loadSound('bass3.mp3');
+}
+
+function setup() {
+  createCanvas(600, 600);
+  r = random(255);
+  g = random(100);
+  b = random(100);
+  song.loop();
+
+
+  analyzer = new p5.Amplitude();
+
+
+  analyzer.setInput(song);
+  
+  
+  mic = new p5.AudioIn();
+  mic.start();
+  fft = new p5.FFT();
+  fft.setInput(mic);
+}
+
+function draw() {
+  background(0);
+
+ 
+  let rms = analyzer.getLevel();
+  fill(r, g, b, 170);
+  noStroke();
+
+  //rechts
+  ellipse(width / 1, height / 1, 10 + rms * 250, 10   * 200);
+  //links
+  ellipse(width / 100, height / 1, 10 + rms * 250, 10   * 200);
+
+  
+  
+  
+  
+  let spectrum = fft.analyze();
+
+  beginShape();
+  for (i = 0; i < spectrum.length; i++) {
+    vertex(i, map(spectrum[i], 0, 255, height, 0));
+  }
+  endShape();
+}
